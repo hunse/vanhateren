@@ -39,7 +39,7 @@ def test_contrast_normalize(plt):
 
 
 def test_scale(plt):
-    r, c = 1, 5
+    r, c = 2, 10
     patches = load_patches(r * c)
     patches2 = pp.scale(patches)
 
@@ -48,8 +48,8 @@ def test_scale(plt):
             for i in range(r) for j in range(c)]
     for k in range(r * c):
         show_patch(axes[k][0], patches[k])
-        hist_patch(axes[k][1], patches[k])
-        show_patch(axes[k][2], patches2[k])
+        show_patch(axes[k][1], patches2[k])
+        hist_patch(axes[k][2], patches[k])
         hist_patch(axes[k][3], patches2[k])
     plt.tight_layout()
 

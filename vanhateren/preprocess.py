@@ -41,7 +41,8 @@ def contrast_normalize(images, remove_mean=True, beta=0.01, hard_beta=True):
 def scale(images, **kwargs):
     images = contrast_normalize(images, remove_mean=True, **kwargs)
     images /= 2.5
-    return images.clip(-1, 1)
+    np.clip(images, -1, 1, out=images)
+    return images
 
 
 def zca(train, test=None, gamma=1e-5, dtype='float64', **kwargs):
