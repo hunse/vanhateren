@@ -5,9 +5,14 @@ import urllib2
 import numpy as np
 
 
-def download(url, filename, verbose=True):
+def download(url, filename, mkdir=False, verbose=True):
     page = urllib2.urlopen(url)
     data = page.read()
+
+    dirname = os.path.dirname(filename)
+    if mkdir and not os.path.exists(dirname):
+        os.mkdir(dirname)
+
     with open(filename, 'wb+') as f:
         f.write(data)
         if verbose:
@@ -31,6 +36,8 @@ class VanHateren(object):
     def image_list(self, server=False):
         if server:
             return list(range(1, 4213))
+        if not os.path.exists(self.image_dir):
+            return []
 
         pattern = 'imk([0-9]{5}).' + self.image_ext
         numbers = []
@@ -57,7 +64,7 @@ class VanHateren(object):
         dest = self.image_path(i)
         if overwrite or not os.path.exists(dest):
             try:
-                download(url, dest)
+                download(url, dest, mkdir=True, verbose=True)
             except urllib2.HTTPError as e:
                 if e.code == 404:
                     raise ValueError(
@@ -93,7 +100,12 @@ class VanHateren(object):
         return images
 
     def patches(self, n, shape, n_images=10, replace=True, rng=np.random):
-        inds = rng.choice(self.image_list(), size=n_images, replace=replace)
+        local_inds = self.image_list()
+        if len(local_inds) == 0:
+            self.download_images(range(1, n_images+1))
+            local_inds = self.image_list()
+
+        inds = rng.choice(local_inds, size=n_images, replace=replace)
         images = self.images(inds)
 
         im_shape = images.shape[1:]

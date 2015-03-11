@@ -1,3 +1,5 @@
+import numpy as np
+
 from vanhateren import VanHateren
 
 
@@ -33,7 +35,7 @@ def test_patches(plt):
     shape = (64, 64)
 
     vh = VanHateren(calibrated=True)
-    patches = vh.patches(n, shape)
+    patches = vh.patches(n, shape, rng=np.random.RandomState(8))
 
     axes = [plt.subplot(r, c, i+1) for i in range(n)]
     for k, ax in enumerate(axes):
